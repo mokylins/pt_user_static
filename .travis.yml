@@ -1,0 +1,24 @@
+language: ruby
+branches:
+  only:
+  - master
+cache:
+  directories:
+  - $HOME/.config
+  - $HOME/.cache/pip
+before_install:
+- pip install --user awscli
+script:
+- wget https://raw.githubusercontent.com/szmolin/dist/master/set-mod-time -O $HOME/set-mod-time
+- chmod +x $HOME/set-mod-time
+- $HOME/set-mod-time -config=$HOME/.config/config.txt
+- env AWS_ACCESS_KEY_ID=${SG_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${SG_AWS_SECRET_ACCESS_KEY}
+  aws --region ap-southeast-1 s3 sync . s3://${BUCKET}/user/ --delete --exclude ".travis.yml"
+  --exclude ".git/*" --exclude "README.md"
+- aws --region cn-north-1 s3 sync . s3://${BUCKET}/user/ --delete --exclude ".travis.yml"
+  --page-size 50 --exclude ".git/*" --exclude "README.md"
+env:
+  global:
+  - secure: QAjaMaIzlX0IICHpwBwODKMWCpYAbMf45h49aa6lmq2HboRW/0g+bFZ5enDduLd5ebc53Z+Ikwlo94jIPb4dmFOUUB4C8KVbW6XfD1nQglofK7WpE74syK2DzUjDFVqGwMDEqp7luGZGJiGT2k5xs1E6QZ9gVYanmP3FHIQoLCjdL0gBDVwTyMp0HQ57uIvPJizqJ6QS84K4g9RN0fCMzHVwp/0luN231aOnGLZLgCdy5HBKYlHNhgEAdpei6CKgPi4oGhebe4GngGnWUZ2C3z8Lu4Lqe/XXe+vtyaGmqDMyobV7CwvM+CTfloqNi3a6pq+afpAoyQxYo3Dn/6ozOF7HUMOLgJnyKaRP7izOR0vEFVoUqhP3S5D1qkphGt8CjzaaI7OOyojZ2QyDM456991F21bB8zUk2gTufUeEfaa/VD7EoK0SZam7DfL9fMVfAhjb+pJVy1+3EJPdMUZFrLSTxKojWTmbDQeLRwFz/d0/DM0TigX9b7DT3ThrKOD3y2xHImuGbbrYbSxD7O6RDz4eLqaXP4sj5a6w3vN3PhTb3XOPh30WJBadu6nQj2/2NOPMupF3EARqAtuup3si22WkKrdOKvzU+bQgDIDgSXtVkdFiMy1CzZA4E5qaivP4cYxpFEr/+6PsK9YtLqz8XdDMMFcOwdvJstVW/Sk8I/A=
+  - secure: KEEaqsVuI2hYTjZtwDZbNHxOD5kEiDPXeZ9feiJANuoQxMV/NlIkqE+eOxeBoTS9Xwr9viLO+VV+R8rguZepIlslvNNjv4hkhSkQlpDPuAMRpZpBTdxjsQPLdMvSrNZv2/qKHWWsGQcrCugb6ImvgUs2DKTu2s+mLMormmelaACB3S19uuzPerRlEaBOGpuAIZWlyiL+THkVCHxQ5nSnqH/Zz1dxqeqPa3J1+yEzvHh3Rd+ZM63ZhGvt4PR+060iBlvoZ+WPuv4tRLrF/nynwwmIQqBfQxuoprgk/raZPKpxRCNfKszUnNEyXtJ0hBmd6y3jmcttlqEU4NOIHm+oMaQXwd+6TmwDAgtCUsGtK7MYwmacrLsREimGkchEdoIG/Tnqz6epSGzVQSQdu2DBYTTD/aJZkOZ9Vg5bek2DRpmi5BP7WSJ/adQ0LmbEEaMlsCip+A92ethgDcPspZZbAyeMVZW4/22leNu4R4XGc/wMOVbKO06jZSGG8MCd4vYR8IMBPn3rsXw1GYqI7uP6ST/wqBrABnmdUOFxujQr97MsM2JIgEk7ZMWwgSumROC6bqvjTM8voPSORL0FA2cO7MUzhE2oHFbrON5rs3nUBSPw5h5sa+abgIpS5BFmmoZlCLlWco/ddvhSeL+HHdsgVVu/6MtO2QroTuW+nvGxepw=
+  - secure: u3Flf3Q4x2D14pceJQhAz774J8rIpNRn/XaC9zvGJ2IMleWSsFQDK+mB8hfYDwacFPJAHfvzrIrwZ0GtKKTHNuG3WOe8svV1JXCUorwnwgvNPcAciJlG926pE/QDRfnoAwFq3m3nQNFTAQFXuiasLiaRnsMw/G8uwu1shf+0r6gVoNdGTsQFUJlbH+XlEmcgWbNCWG7gIPzoK4eYayRvQMzQ5tiEysOrgnEsRhxg5yMfLXuD8dZdV9ecNgZXG6Qtxu4nASSg4EyHFWNMIntgPRm3ZGCcIF6zsvqCBYhVNqLIwtsxHAHXwe14j3aY65PZrUNATAntELy1x4DoMrNYOyPPkUHJl/ZyeuH54zJ0+pWl5LAN5SzYS3//1fq3Rpzc57HNptFeYXQElC2Afe5fbOk+zN4mjCvc0bFNZsrGIxkoVDCN6Oh/lerzbHYrjBDlVYoOmDKlgzcwW/XM4LYFtI5TIwiUlSDAsodynR+4nflk/onPHkoKsubFcsOmiTUg9J/LqiZA5+NFRskmv+cSgU14bC+8uzQ57rCVCLTiU0zD/YWIXlauOvNSgMVCNatAH1pqgmcLmmfOlQbA2WqhMU4Z25Ofv2n0lzySSto3Yrn3+o/2xyr5a31f4vyy46P1rZlWDDdvYd2RxTWkCus1EESa+odwK0HL5RJlvRXpNZg=
