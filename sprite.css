@@ -1,0 +1,45 @@
+#gopng_brand{
+height: 57px;
+width: 188px;
+background: url() -0px -0px no-repeat;
+}
+#gopng_forgot_pwd{
+height: 51px;
+width: 165px;
+background: url() -0px -57px no-repeat;
+}
+#gopng_账号服务{
+height: 51px;
+width: 175px;
+background: url() -0px -108px no-repeat;
+}
+#gopng_step{
+height: 35px;
+width: 217px;
+background: url() -0px -159px no-repeat;
+}
+#gopng_step_active{
+height: 35px;
+width: 217px;
+background: url() -0px -194px no-repeat;
+}
+#gopng_correct{
+height: 26px;
+width: 26px;
+background: url() -188px -0px no-repeat;
+}
+#gopng_error{
+height: 26px;
+width: 26px;
+background: url() -188px -26px no-repeat;
+}
+#gopng_circle{
+height: 16px;
+width: 17px;
+background: url() -165px -57px no-repeat;
+}
+#gopng_circle2{
+height: 16px;
+width: 17px;
+background: url() -182px -57px no-repeat;
+}
