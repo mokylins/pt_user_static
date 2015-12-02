@@ -13,11 +13,17 @@ var namespace = function() {
 
 namespace("UserManager");
 
-// UserManager.g_server = "https://user-dev.36b.me/";
-UserManager.g_server = "https://user.mokylin.com/";
+UserManager.g_server = "https://user-dev.36b.me/";
+// UserManager.g_server = "https://user.mokylin.com/";
 UserManager.currUser = null;
 
 /********************登录相关**************************/
+/**
+ * 跳转登陆页面
+ */
+UserManager.toLoginPage = function (prms) {
+    location.href = UserManager.g_server+"rs/login.html?sUrl="+encodeURIComponent(prms.sUrl)+"&fUrl="+encodeURIComponent(prms.fUrl);
+}
 /**
  * 用户登陆
  */
@@ -158,6 +164,12 @@ UserManager.getVerifyUrl = function() {
 }
 
 /********************注册相关**************************/
+/**
+ * 跳转注册页面
+ */
+UserManager.toRegPage = function (prms) {
+    location.href = UserManager.g_server+"rs/register.html?sUrl="+encodeURIComponent(prms.sUrl)+"&fUrl="+encodeURIComponent(prms.fUrl);
+}
 /**
  * 邮箱注册
  */
