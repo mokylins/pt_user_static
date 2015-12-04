@@ -13,8 +13,7 @@ var namespace = function() {
 
 namespace("UserManager");
 
-UserManager.g_server = "https://user-dev.36b.me/";
-// UserManager.g_server = "https://user.mokylin.com/";
+UserManager.g_server = "https://user.mokylin.com/";
 UserManager.currUser = null;
 
 /********************登录相关**************************/
