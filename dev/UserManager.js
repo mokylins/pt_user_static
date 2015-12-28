@@ -21,8 +21,13 @@ UserManager.currUser = null;
 /**
  * 跳转登陆页面
  */
-UserManager.toLoginPage = function (prms) {
-    location.href = UserManager.g_server+"login.html?_surl="+encodeURIComponent(prms.sUrl)+"&_furl="+encodeURIComponent(prms.fUrl);
+UserManager.toLoginPage = function (prms, flag) {
+    var _url = UserManager.g_server+"login.html?_surl="+encodeURIComponent(prms.sUrl)+"&_furl="+encodeURIComponent(prms.fUrl);
+    if(flag){
+        return _url;
+    }else{
+        location.href = _url;
+    }
 }
 /**
  * 用户登陆
@@ -167,8 +172,13 @@ UserManager.getVerifyUrl = function() {
 /**
  * 跳转注册页面
  */
-UserManager.toRegPage = function (prms) {
-    location.href = UserManager.g_server+"register.html?_surl="+encodeURIComponent(prms.sUrl)+"&_furl="+encodeURIComponent(prms.fUrl);
+UserManager.toRegPage = function (prms, flag) {
+    var _url = UserManager.g_server+"register.html?_surl="+encodeURIComponent(prms.sUrl)+"&_furl="+encodeURIComponent(prms.fUrl);
+    if(flag){
+        return _url;
+    }else{
+        location.href = _url;
+    }
 }
 /**
  * 邮箱注册
