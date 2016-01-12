@@ -239,7 +239,7 @@ UserManager.doFindPwd = function(prms, callback, failback) {
     $.getJSON(
         UserManager.g_server + "user/security/dofindpwd?function=?", {
             validatecode: prms.validatecode,
-            newpwd: prms.pwd
+            newpwd: prms.newpwd
         },
         function(result) {
             if (result.status == 1) {
