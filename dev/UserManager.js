@@ -212,6 +212,45 @@ UserManager.isRegVerify = function() {
     }
 }
 
+/**
+ * 重置密码请求【邮件发送】
+ */
+UserManager.requestFindPwd = function(prms, callback, failback) {
+    $.getJSON(
+        UserManager.g_server + "user/security/requestfindpwd?function=?", {
+            email: prms.email,
+            surl: prms.surl,
+            furl: prms.furl
+        },
+        function(result) {
+            if (result.status == 1) {
+                if (callback) callback(result);
+            } else {
+                if (failback) failback(result);
+            }
+        }
+    );
+}
+
+/**
+ * 重置密码【邮件发送】
+ */
+UserManager.doFindPwd = function(prms, callback, failback) {
+    $.getJSON(
+        UserManager.g_server + "user/security/dofindpwd?function=?", {
+            validatecode: prms.validatecode,
+            newpwd: prms.pwd
+        },
+        function(result) {
+            if (result.status == 1) {
+                if (callback) callback(result);
+            } else {
+                if (failback) failback(result);
+            }
+        }
+    );
+}
+
 /************ Cookie *************************/
 UserManager.getCookie = function(name) {
     var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
