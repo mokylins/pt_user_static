@@ -21,3 +21,7 @@ $.contactPrm = function(_surl, _furl){
         return "?_surl="+_surl+"&_furl="+_furl;
     } else return "";
 }
+
+$.getPreUrl = function(url){
+    return url.substring(0, url.lastIndexOf("/")+1);
+}
