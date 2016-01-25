@@ -89,6 +89,18 @@ UserManager.logout = function(prms, callback, failback) {
 }
 
 /**
+ * 用户注销【带重定向url】
+ */
+UserManager.logout2 = function(prms, flag) {
+    var _url = UserManager.g_server+"user/login/go2out?surl="+encodeURIComponent(prms.sUrl);
+    if(flag){
+        return _url;
+    }else{
+        location.href = _url;
+    }
+}
+
+/**
  * 密码修改
  */
 UserManager.modifyPwd = function(prms, callback, failbackl) {
