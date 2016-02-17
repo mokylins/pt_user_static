@@ -1,0 +1,99 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    color: #959595;
+    font-size: 14px;
+    font-family: '微软雅黑';
+}
+a{
+    color: #959595;
+    text-decoration: none;
+}
+img{
+    vertical-align: bottom;
+}
+.txtR{
+    text-align: right;
+}
+.txtC{
+    text-align: center;
+}
+
+.logo{
+    margin: 20px auto;
+    width: 180px;
+    height: 65px;
+    background: url(m-sprite.png) 0 -205px no-repeat;
+}
+
+.form{
+    margin-bottom: 57px;
+    .row{
+        width: 90%;
+        margin: 10px auto;
+        padding: 10px 0;
+        &.borderB{
+            border-bottom: 1px solid #bebebe;
+        }
+        &.protocol{
+            margin-top: 40px;
+        }
+        .button{
+            display: block;
+            width: 100%;
+            outline: none;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #bebebe;
+            background-color: #FFF;
+            color: #959595;
+            font-family: '微软雅黑';
+            font-size: 16px;
+            &.submit{
+                border-color: #48cb75;
+                background-color: #48cb75;
+                color: #FFF;
+            }
+        }
+        .error-tips {
+          color: #D81212;
+          padding-left: 70px;
+        }
+        input{
+            outline: none;
+            border: none;
+            width: 70%;
+            color: #000;
+            &.verify-inp{
+                width: 100px;
+            }
+        }
+        .login-btn{
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+            background: url(m-sprite.png) no-repeat;
+            transform: scale(.8,.8);
+            &.login-qq{
+                background-position: 0 -100px;
+            }
+            &.login-wechat{
+                background-position: 0 0;
+            }
+        }
+    }
+}
+
+.footer{
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid #e4e4e4;
+    background-color: #f1f1f1;
+    font-size: 12px;
+}
