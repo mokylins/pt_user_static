@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="墨麟,古剑奇谭,秦时明月">
+    <meta name="description" content="墨麟游戏产品账号，用户注册">
+    <title>用户注册 - 墨麟游戏</title>
+    <link rel="stylesheet" href="https://cdn-prod.36b.me/user/production/login_frame.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <script src="https://cdn-prod.36b.me/user/production/jquery-1.8.1.min.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/common.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/UserManager.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <header class="header">
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    <a class="icon-spr brand" href="http://www.mokylin.com/"></a>
+                    <div class="icon-spr icon-t icon-user"></div>
+                </div>
+                <div class="navbar-right">
+                    已有账号？马上去 <a id="toLoginBtn" href="javascript:;">&gt;&gt;登录</a>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <div id="panel" class="panel">
+                <div class="form-title">用户注册</div>
+                <div class="form-area" id="reg_form">
+                    <div class="row">
+                        <label class="tl">邮箱:</label>
+                        <input type="email" id="emailInp" class="inp email-inp" placeholder="请输入有效的邮箱地址">
+                        <div class="error-tips"><span id="emailTip" style="display:none;"></span></div>
+                    </div>
+                    <div class="row">
+                        <label class="tl">密码:</label>
+                        <input type="password" id="pwdRegInp" class="inp pwd-reg-inp" placeholder="支持6-20位字母，数字或特殊字符">
+                        <div class="error-tips"><span id="pwdRegTip" style="display:none;"></span></div>
+                    </div>
+                    <div class="row">
+                        <label class="tl">确认密码:</label>
+                        <input type="password" id="pwdConfirmInp" class="inp pwd-confirm-inp" placeholder="请再次输入密码">
+                        <div class="error-tips"><span id="pwdConfirmTip" style="display:none;"></span></div>
+                    </div>
+                    <div id="verifyRegLayer" class="row" style="display: none;">
+                        <div class="tl">验证码: </div>
+                        <input type="text" id="verifyRegInp" class="inp verify-inp">
+                        <a href="javascript:;" id="refreshRegVer"><img id="verifyRegImg" src="" width="80" height="35" title="点击图片刷新"></a>
+                        <div class="error-tips"><span id="verifyRegTip" style="display:none;"></span></div>
+                    </div>
+                    <div class="row" style="margin-top: 20px;">
+                        <label class="d-protocal"><!-- <input type="checkbox"> -->点击注册，即表示您已阅读并同意<a href="protocol.html" target="_blank">《用户注册服务协议》</a></label>
+                    </div>
+                    <div class="row"><button id="regBtn" class="btn">立即注册</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>
+        <a href="http://www.mokylin.com/contact.php" target="_blank">联系我们</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/timeline.php" target="_blank">加入墨麟</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/video.php" target="_blank">视频中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/download.php" target="_blank">下载中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/legal.php" target="_blank">法律声明</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/map.php" target="_blank">网站地图</a>
+    </p>
+    <p>
+        <a href="http://www.mokylin.com/images/B2-20130762.jpg" target="_blank">ICP粤B2-20130762</a>
+        <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备13082784号-1</a>
+        <a href="http://www.mokylin.com/images/icp.jpg" target="_blank">粤网文[2013]1028-278</a>
+    </p>
+    <p>Copyright © 2011-<script>document.write(new Date().getFullYear())</script> Mokylin. All Rights Reserved</p>
+</div>
+
+<script>
+$(function () {
+    var surl = $.getReqParam("_surl");
+    var furl = $.getReqParam("_furl");
+    var $panelPage = $("#panel");
+
+    if($.isMobileDevice()){
+        location.href = "registerMobile.html"+$.contactPrm(surl, furl)
+    }
+    setRegVerify();
+
+    // 去登录
+    $("#toLoginBtn").attr("href","login.html"+$.contactPrm(surl, furl));
+
+    $panelPage.find("#emailInp").focus(function() {
+        $panelPage.find("#emailTip").hide();
+    });
+    $panelPage.find("#pwdRegInp").focus(function() {
+        $panelPage.find("#pwdRegTip").hide();
+    });
+    $panelPage.find("#pwdConfirmInp").focus(function() {
+        $panelPage.find("#pwdConfirmTip").hide();
+    });
+    $panelPage.find("#verifyRegInp").focus(function() {
+        $panelPage.find("#verifyRegTip").hide();
+    });
+
+    $panelPage.find("#regBtn").click(function() {
+        var prms = invalidRegForm();
+        if (prms) {
+            UserManager.register(prms, function(result) {
+                alert("注册成功! ");
+                if (surl) location.href = decodeURIComponent(surl);
+                else location.href = "www.mokylin.com";
+            }, function(result){
+                if (result.status == 0) {
+                    $panelPage.find("#emailTip").show().text("注册失败");
+                } else if (result.status == 2) {
+                    $panelPage.find("#emailTip").show().text("您的IP已经被禁止，暂时无法完成注册");
+                } else if (result.status == 14) {
+                    $panelPage.find("#emailTip").show().text("此邮箱已经被抢先注册，请重新输入");
+                } else if (result.status == 17) {
+                    $panelPage.find("#verifyRegTip").show().text("验证码校验失败");
+                }
+                setRegVerify();
+            });
+        }
+    });
+
+    function invalidRegForm() {
+        var _uname = $.trim($panelPage.find("#emailInp").val()),
+            _pwd = $.trim($panelPage.find("#pwdRegInp").val()),
+            _confirmPwd = $.trim($panelPage.find("#pwdConfirmInp").val()),
+            _validatecode = "";
+
+        if (_uname.length <= 0) {
+            $panelPage.find("#emailTip").show().text("请输入邮箱");
+            return false;
+        } else if (_pwd.length <= 0) {
+            $panelPage.find("#pwdRegTip").show().text("请输入密码");
+            return false;
+        } else if (_pwd != _confirmPwd) {
+            $panelPage.find("#pwdConfirmTip").show().text("确认密码不一致");
+            return false;
+        } else if (UserManager.isRegVerify()) {
+            _validatecode = $.trim($panelPage.find("#verifyRegInp").val());
+            if (_validatecode.length <= 0) {
+                $panelPage.find("#verifyRegTip").show().text("请输入验证码");
+                return false;
+            }
+        }
+
+        return {
+            email: _uname,
+            pwd: _pwd,
+            validatecode: _validatecode,
+            surl: "login.html",
+            furl: "login.html"
+        };
+    }
+
+    function setRegVerify() {
+        if (UserManager.isRegVerify()) {
+            // 拉取验证码
+            $panelPage.find("#verifyRegLayer").show();
+            $panelPage.find("#verifyRegImg").attr("src", UserManager.getVerifyUrl());
+            $panelPage.find("#refreshRegVer").click(function() {
+                $panelPage.find("#verifyRegImg").attr("src", UserManager.getVerifyUrl());
+            });
+        }
+    }
+});
+</script>
+</body>
+</html>

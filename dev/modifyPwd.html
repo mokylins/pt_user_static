@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="墨麟,古剑奇谭,秦时明月">
+    <meta name="description" content="墨麟游戏产品账号，密码修改">
+    <title>密码修改 - 墨麟游戏</title>
+    <link rel="stylesheet" href="https://cdn-prod.36b.me/user/production/login_frame.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <script src="https://cdn-prod.36b.me/user/production/jquery-1.8.1.min.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/common.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/UserManager.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <header class="header">
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    <a class="icon-spr brand" href="http://www.mokylin.com/"></a>
+                    <div class="icon-spr icon-t icon-user"></div>
+                </div>
+                <div class="navbar-right">
+                    还没有账号？马上去 <a id="toRegBtn" href="javascript:;">&gt;&gt;注册</a>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <div id="panel" class="panel">
+                <div class="form-title">密码修改</div>
+                <div class="form-area" id="login_form">
+                    <div class="row">
+                        <input type="password" id="pwdInp" class="inp inp-group pwd-inp" placeholder="旧密码">
+                        <div class="error-tips"><span id="pwdTip" style="display:none;"></span></div>
+                    </div>
+                    <div class="row">
+                        <input type="password" id="newPwdInp" class="inp inp-group pwd-inp" placeholder="新密码">
+                        <input type="password" id="confirmPwdInp" class="inp inp-group pwd-inp" placeholder="重复新密码">
+                        <div class="error-tips"><span id="newPwdTip" style="display:none;"></span></div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <label class="d-auto-login" style="visibility: hidden;"><input type="checkbox">自动登录</label>
+                        <a class="d-forget" id="toForgotBtn" href="javascript:;">忘记密码？</a>
+                    </div>
+                    <div class="row"><button id="submitBtn" class="btn">确认修改</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>
+        <a href="http://www.mokylin.com/contact.php" target="_blank">联系我们</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/timeline.php" target="_blank">加入墨麟</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/video.php" target="_blank">视频中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/download.php" target="_blank">下载中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/legal.php" target="_blank">法律声明</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/map.php" target="_blank">网站地图</a>
+    </p>
+    <p>
+        <a href="http://www.mokylin.com/images/B2-20130762.jpg" target="_blank">ICP粤B2-20130762</a>
+        <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备13082784号-1</a>
+        <a href="http://www.mokylin.com/images/icp.jpg" target="_blank">粤网文[2013]1028-278</a>
+    </p>
+    <p>Copyright © 2011-<script>document.write(new Date().getFullYear())</script> Mokylin. All Rights Reserved</p>
+</div>
+
+<script>
+$(function () {
+    if(!UserManager.isLogined()){
+        // alert("请先登录!");
+        // location.href = "login.html";
+    }
+
+    var surl = $.getReqParam("_surl");
+    var furl = $.getReqParam("_furl");
+    var $panelPage = $("#panel");
+
+    // 去注册
+    $("#toRegBtn").attr("href","register.html"+$.contactPrm(surl, furl));
+    // 去找回密码
+    $("#toForgotBtn").attr("href","forgot.html"+$.contactPrm(surl, furl));
+
+    $panelPage.find("#pwdInp").focus(function(){
+        $panelPage.find("#pwdTip").hide();
+    });
+    $panelPage.find("#newPwdInp").focus(function(){
+        $panelPage.find("#newPwdTip").hide();
+    });
+    $panelPage.find("#confirmPwdInp").focus(function(){
+        $panelPage.find("#newPwdTip").hide();
+    });
+
+    $panelPage.find("#submitBtn").click(function() {
+        var prms = invalidForm();
+        if (prms) {
+            UserManager.modifyPwd(prms, function(result) {
+                alert("密码修改成功！请重新进行登录。");
+                // location.reload();
+                location.href = "login.html"+$.contactPrm(surl, furl);
+            }, function(result) {
+                if (result.status == 0) {
+                    $panelPage.find("#newPwdTip").show().text("密码修改失败");
+                } else if (result.status == 5) {
+                    $panelPage.find("#newPwdTip").show().text("系统错误!");
+                }
+            });
+        }
+    });
+
+    function invalidForm() {
+        var _pwd = $.trim($panelPage.find("#pwdInp").val()),
+            _newPwd = $.trim($panelPage.find("#newPwdInp").val()),
+            _confirmPwd = $.trim($panelPage.find("#confirmPwdInp").val());
+
+        if (_pwd.length <= 0) {
+            $panelPage.find("#pwdTip").show().text("请输入密码进行验证");
+            return false;
+        } else if (_newPwd.length <= 0) {
+            $panelPage.find("#newPwdTip").show().text("请输入新的密码");
+            return false;
+        } else if (_newPwd != _confirmPwd) {
+            $panelPage.find("#newPwdTip").show().text("两次输入密码不一致");
+            return false;
+        }
+
+        return {
+            oldpwd: _pwd,
+            pwd: _confirmPwd,
+        };
+    }
+});
+</script>
+</body>
+</html>

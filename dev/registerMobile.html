@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="墨麟,古剑奇谭,秦时明月">
+    <meta name="description" content="墨麟游戏产品账号，用户注册">
+	<title>用户注册 - 墨麟游戏</title>
+    <link rel="stylesheet" href="style_mobile.css">
+    <script src="https://cdn-prod.36b.me/user/production/jquery-1.8.1.min.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/common.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/UserManager.js"></script>
+</head>
+<body>
+	<div class="logo"></div>
+	<div class="form">
+		<div class="row borderB">
+			<span>输入邮箱：</span><input type="text" id="emailInp" >
+            <div class="error-tips"><span id="emailTip" style="display:none;"></span></div>
+		</div>
+		<div class="row borderB">
+			<span>输入密码：</span><input type="password" id="pwdInp" >
+            <div class="error-tips"><span id="pwdTip" style="display:none;"></span></div>
+		</div>
+		<div class="row borderB">
+			<span>确认密码：</span><input type="password" id="pwdConfirmInp" >
+            <div class="error-tips"><span id="confirmTip" style="display:none;"></span></div>
+		</div>
+		<div class="row borderB" id="verifyRegLayer" style="display:none;">
+			<span>&nbsp;&nbsp;&nbsp;验证码：</span><input type="text" id="verifyInp" class="verify-inp" >
+            <a href="javascript:;" id="refreshRegVer"><img id="verifyRegImg" src="" width="80">点击图片刷新</a>
+            <div class="error-tips"><span id="verifyRegTip" style="display:none;"></span></div>
+		</div>
+		<div class="row protocol">点击注册，即表示您已阅读并同意<a href="protocol.html" target="_blank">《用户注册协议》</a></div>
+		<div class="row"><button id="regBtn" class="button submit">立即注册</button></div>
+	</div>
+	<div class="footer">Copyright © 2012-<script>document.write(new Date().getFullYear())</script> 墨麟科技股份有限公司</div>
+</body>
+<script type="text/javascript">
+$(function(){
+    var surl = $.getReqParam("_surl");
+    var furl = $.getReqParam("_furl");
+    var $form = $(".form");
+
+    if(!$.isMobileDevice()){
+        location.href = "register.html"+$.contactPrm(surl, furl)
+    }
+    setRegVerify();
+
+    $form.find("#emailInp").focus(function() {
+        $form.find("#emailTip").hide();
+    });
+    $form.find("#pwdInp").focus(function() {
+        $form.find("#pwdTip").hide();
+    });
+    $form.find("#pwdConfirmInp").focus(function() {
+        $form.find("#confirmTip").hide();
+    });
+    $form.find("#verifyInp").focus(function() {
+        $form.find("#verifyRegTip").hide();
+    });
+
+    $form.find("#regBtn").click(function() {
+        var prms = invalidRegForm();
+        if (prms) {
+            UserManager.register(prms, function(result) {
+                alert("注册成功! ");
+                if (surl) location.href = decodeURIComponent(surl);
+                else location.href = "www.mokylin.com";
+            }, function(result){
+                if (result.status == 0) {
+                    $form.find("#emailTip").show().text("注册失败");
+                } else if (result.status == 2) {
+                    $form.find("#emailTip").show().text("您的IP已经被禁止，暂时无法完成注册");
+                } else if (result.status == 14) {
+                    $form.find("#emailTip").show().text("此邮箱已经被抢先注册，请重新输入");
+                } else if (result.status == 17) {
+                    $form.find("#verifyRegTip").show().text("验证码校验失败");
+                }
+                setRegVerify();
+            });
+        }
+    });
+
+    function invalidRegForm() {
+        var _uname = $.trim($form.find("#emailInp").val()),
+            _pwd = $.trim($form.find("#pwdInp").val()),
+            _confirmPwd = $.trim($form.find("#pwdConfirmInp").val()),
+            _validatecode = "";
+
+        if (_uname.length <= 0) {
+            $form.find("#emailTip").show().text("请输入邮箱");
+            return false;
+        } else if (_pwd.length <= 0) {
+            $form.find("#pwdTip").show().text("请输入密码");
+            return false;
+        } else if (_pwd != _confirmPwd) {
+            $form.find("#confirmTip").show().text("确认密码不一致");
+            return false;
+        } else if (UserManager.isRegVerify()) {
+            _validatecode = $.trim($form.find("#verifyInp").val());
+            if (_validatecode.length <= 0) {
+                $form.find("#verifyRegTip").show().text("请输入验证码");
+                return false;
+            }
+        }
+
+        return {
+            email: _uname,
+            pwd: _pwd,
+            validatecode: _validatecode,
+            surl: "loginMobile.html",
+            furl: "loginMobile.html"
+        };
+    }
+
+    function setRegVerify() {
+        if (UserManager.isRegVerify()) {
+            // 拉取验证码
+            $form.find("#verifyRegLayer").show();
+            $form.find("#verifyRegImg").attr("src", UserManager.getVerifyUrl());
+            $form.find("#refreshRegVer").click(function() {
+                $form.find("#verifyRegImg").attr("src", UserManager.getVerifyUrl());
+            });
+        }
+    }
+});
+</script>
+</html>

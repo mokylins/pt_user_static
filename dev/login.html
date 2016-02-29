@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="墨麟,古剑奇谭,秦时明月">
+    <meta name="description" content="墨麟游戏产品账号，用户登录">
+    <title>用户登录 - 墨麟游戏</title>
+    <link rel="stylesheet" href="https://cdn-prod.36b.me/user/production/login_frame.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <script src="https://cdn-prod.36b.me/user/production/jquery-1.8.1.min.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/common.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/UserManager.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <header class="header">
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    <a class="icon-spr brand" href="http://www.mokylin.com/"></a>
+                    <div class="icon-spr icon-t icon-user"></div>
+                </div>
+                <div class="navbar-right">
+                    还没有账号？马上去 <a id="toRegBtn" href="javascript:;">&gt;&gt;注册</a>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <div id="panel" class="panel">
+                <div class="form-title">用户登录</div>
+                <div class="form-area" id="login_form">
+                    <div class="row">
+                        <input type="text" id="unameInp" class="inp inp-group uname-inp" placeholder="输入邮箱地址">
+                        <input type="password" id="pwdInp" class="inp inp-group pwd-inp" placeholder="6-20位字母，数字或特殊字符">
+                        <div class="error-tips"><span id="unameTip" style="display:none;"></span><span id="pwdTip" style="display:none;"></span></div>
+                    </div>
+                    <div id="verifyLayer" class="row" style="display: none;">
+                        <div class="tl">验证码: </div>
+                        <input type="text" id="verifyInp" class="inp verify-inp">
+                        <a href="javascript:;" id="refreshVer"><img id="verifyImg" src="" width="80" height="35" title="点击图片刷新"></a>
+                        <div class="error-tips"><span id="verTip" style="display:none;"></span></div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <a id="toModBtn" href="javascript:;">修改密码</a>
+                        <label class="d-auto-login" style="visibility: hidden;"><input type="checkbox">自动登录</label>
+                        <a class="d-forget" id="toForgotBtn" href="javascript:;">忘记密码？</a>
+                    </div>
+                    <div class="row"><button id="loginBtn" class="btn">立即登录</button></div>
+                    <div class="row">其他方式：<a href="" id="loginByQQ" target="_blank"></a>&nbsp;&nbsp;<a href="" id="loginByWechat" target="_blank"></a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>
+        <a href="http://www.mokylin.com/contact.php" target="_blank">联系我们</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/timeline.php" target="_blank">加入墨麟</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/video.php" target="_blank">视频中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/download.php" target="_blank">下载中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/legal.php" target="_blank">法律声明</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/map.php" target="_blank">网站地图</a>
+    </p>
+    <p>
+        <a href="http://www.mokylin.com/images/B2-20130762.jpg" target="_blank">ICP粤B2-20130762</a>
+        <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备13082784号-1</a>
+        <a href="http://www.mokylin.com/images/icp.jpg" target="_blank">粤网文[2013]1028-278</a>
+    </p>
+    <p>Copyright © 2011-<script>document.write(new Date().getFullYear())</script> Mokylin. All Rights Reserved</p>
+</div>
+
+<script>
+$(function () {
+    var surl = $.getReqParam("_surl");
+    var furl = $.getReqParam("_furl");
+    var $loginPage = $("#panel");
+
+    if($.isMobileDevice()){
+        location.href = "loginMobile.html"+$.contactPrm(surl, furl)
+    }
+    setVerify();
+
+    // 去注册
+    $("#toRegBtn").attr("href","register.html"+$.contactPrm(surl, furl));
+    // 去修改密码
+    $("#toModBtn").attr("href","modifyPwd.html"+$.contactPrm(surl, furl));
+    // 去找回密码
+    $("#toForgotBtn").attr("href","forgot.html"+$.contactPrm(surl, furl));
+
+    $loginPage.find("#loginByQQ").attr("href", UserManager.loginByQQUrl({surl:surl}));
+    $loginPage.find("#loginByWechat").attr("href", UserManager.loginByWechatUrl({surl:surl}));
+
+    $loginPage.find("#unameInp").focus(function() {
+        $loginPage.find("#unameTip").hide();
+    });
+    $loginPage.find("#pwdInp").focus(function() {
+        $loginPage.find("#pwdTip").hide();
+    });
+    $loginPage.find("#verifyInp").focus(function() {
+        $loginPage.find("#verifyTip").hide();
+    });
+
+    $loginPage.find("#loginBtn").click(function() {
+        var prms = invalidLoginForm();
+        if (prms) {
+            UserManager.login(prms, function(result) {
+                if (surl) location.href = decodeURIComponent(surl);
+                else location.href = "www.mokylin.com";
+            }, function(result) {
+                if (result.status == 0) {
+                    $loginPage.find("#unameTip").show().text("登录失败");
+                } else if (result.status == 5) {
+                    $loginPage.find("#unameTip").show().text("系统错误!");
+                } else if (result.status == 6) {
+                    $loginPage.find("#unameTip").show().text("此邮箱账号不存在!");
+                } else if (result.status == 7) {
+                    $loginPage.find("#pwdTip").show().text("密码错误!");
+                } else if (result.status == 15) {
+                    $loginPage.find("#unameTip").show().text("此账号已经被禁用!");
+                } else if (result.status == 17) {
+                    $loginPage.find("#verTip").show().text("验证码输入错误");
+                }
+                setVerify();
+            });
+        }
+    });
+
+    function invalidLoginForm() {
+        var _uname = $.trim($loginPage.find("#unameInp").val()),
+            _pwd = $.trim($loginPage.find("#pwdInp").val()),
+            _validatecode = "";
+
+        if (_uname.length <= 0) {
+            $loginPage.find("#unameTip").show().text("请输入用户名");
+            return false;
+        } else if (_pwd.length <= 0) {
+            $loginPage.find("#pwdTip").show().text("请输入密码");
+            return false;
+        } else if (UserManager.isVerify()) {
+            _validatecode = $.trim($loginPage.find("#verifyInp").val());
+            if (_validatecode.length <= 0) {
+                $loginPage.find("#verifyTip").show().text("请输入验证码");
+                return false;
+            }
+        }
+
+        return {
+            uname: _uname,
+            pwd: _pwd,
+            validatecode: _validatecode
+        };
+    }
+
+    function setVerify(){
+        if (UserManager.isVerify()) {
+            // 拉取验证码
+            $loginPage.find("#verifyLayer").show();
+            $loginPage.find("#verifyImg").attr("src", UserManager.getVerifyUrl());
+            $loginPage.find("#refreshVer").click(function() {
+                $loginPage.find("#verifyImg").attr("src", UserManager.getVerifyUrl());
+            });
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="墨麟,古剑奇谭,秦时明月">
+    <meta name="description" content="墨麟游戏产品账号，密码找回">
+    <title>密码找回 - 墨麟游戏</title>
+    <link rel="stylesheet" href="https://cdn-prod.36b.me/user/production/style.css">
+    <script src="https://cdn-prod.36b.me/user/production/jquery-1.8.1.min.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/common.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/UserManager.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="container">
+        <header class="header">
+            <div class="navbar-header">
+                <div class="navbar-brand">
+                    <a class="icon-spr brand" href="http://www.mokylin.com/"></a>
+                    <div class="icon-spr icon-t icon-forgot"></div>
+                </div>
+                <div class="navbar-right">
+                    已有账号？马上去 <a id="toLoginBtn" href="javascript:;">&gt;&gt;登录</a>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <div id="panel" class="panel">
+                <ul id="step" class="step-wrap">
+                    <li class="step-1 active">
+                        <i class="icon-spr icon-circle">1</i> 验证身份
+                    </li>
+                    <li class="step-2">
+                        <i class="icon-spr icon-circle">2</i> 重置密码
+                    </li>
+                    <li class="step-3">
+                        <i class="icon-spr icon-circle">3</i> 找回成功
+                    </li>
+                </ul>
+                <form id="form" class="form-forgot">
+                    <div class="form-group">
+                        <input type="text" class="txt txt-email" placeholder="请输入您注册时的邮箱地址">
+                    </div>
+                    <div class="error-msg"></div>
+                    <!-- <div class="form-group">
+                        <label>验证码</label>
+                        <input type="text" class="txt txt-verify" maxlength="4" placeholder="请输入验证码">
+                        <img class="img-verify" src="{{site.user_domain}}/user/validatecode/image">
+                        <a class="lnk-verify" href="javascript:;">换一个</a>
+                    </div> -->
+                    <div class="form-group no-lbl">
+                        <button type="button" class="btn-submit">
+                            <img class="loading" src="loading.gif"> 下一步
+                        </button>
+                    </div>
+                </form>
+                <div id="send" class="send-wrap" style="display:none;">
+                    <div class="tips">
+                        <i class="icon-spr icon-correct"></i> 密码重置的验证信息已发送至您的邮箱！请按邮箱提示操作完成身份验证。
+                    </div>
+                    <div class="resend">
+                        没有收到邮件？
+                        <a href="#" class="btn btn-resend">重新发送邮件</a>
+                        <img class="loading" src="loading.gif">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>
+        <a href="http://www.mokylin.com/contact.php" target="_blank">联系我们</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/timeline.php" target="_blank">加入墨麟</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/video.php" target="_blank">视频中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/download.php" target="_blank">下载中心</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/legal.php" target="_blank">法律声明</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <a href="http://www.mokylin.com/map.php" target="_blank">网站地图</a>
+    </p>
+    <p>
+        <a href="http://www.mokylin.com/images/B2-20130762.jpg" target="_blank">ICP粤B2-20130762</a>
+        <a href="http://www.miitbeian.gov.cn" target="_blank">粤ICP备13082784号-1</a>
+        <a href="http://www.mokylin.com/images/icp.jpg" target="_blank">粤网文[2013]1028-278</a>
+    </p>
+    <p>Copyright © 2011-<script>document.write(new Date().getFullYear())</script> Mokylin. All Rights Reserved</p>
+</div>
+
+<script>
+$(function () {
+    var user_domain = "https://user.mokylin.com";
+    var $panel = $('#panel'),
+        $form = $('#form'),
+        email = '',
+        verify = '';
+
+    // 换一个
+    $panel.on('click', '.lnk-verify', function (e) {
+        // var url = user_domain+'/user/validatecode/image?_=' + new Date().getTime();
+        $form.find('.img-verify').attr('src', UserManager.getVerifyUrl());
+    });
+
+    // 提交
+    $panel.on('click', '.btn-submit', function (e) {
+        var $errorMsg = $form.find('.error-msg'),
+            reg = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        email = $.trim($form.find('.txt-email').val());
+        // verify = $form.find('.txt-verify').val();
+        // if (!email || !verify) {
+        if (!email) {
+            $errorMsg.text('请输入你注册的邮箱地址');
+            return;
+        } else if (!reg.test(email)) {
+            $errorMsg.text('请输入正确的邮箱地址');
+            return;
+        }
+        //  else if (verify.length != 4) {
+        //     $errorMsg.text('验证码不正确');
+        //     return;
+        // }
+        sendEmail();
+    });
+
+    // 重新发送邮件
+    $panel.on('click', '.btn-resend', function (e) {
+        sendEmail();
+    });
+
+    // 发送邮件
+    function sendEmail() {
+        $panel.find('.loading').show();
+        $form.find('.btn-submit').prop('disabled', true);
+        // $.ajax({
+        //     url: user_domain+'/user/security/requestfindpwd',
+        //     data: {
+        //         email: email,
+        //         surl: 'resetpassword.html',
+        //         furl: 'resetpassword.html'
+        //     },
+        //     dataType: 'jsonp',
+        //     jsonp: 'function',
+        //     success: function (result) {
+        //         if (result.status == 1) {
+        //             $('#form').hide();
+        //             $('#send').show();
+        //         }
+        //     },
+        //     complete: function () {
+        //         $panel.find('.loading').hide();
+        //     }
+        // });
+
+        var _url = $.getPreUrl(window.location.href)+"resetpassword.html";
+        UserManager.requestFindPwd({
+            email: email,
+            surl: _url,
+            furl: _url
+        },function(result){
+            $('#form').hide();
+            $('#send').show();
+            $panel.find('.loading').hide();
+        },function(result){
+            $panel.find('.loading').hide();
+        });
+    }
+});
+</script>
+</body>
+</html>

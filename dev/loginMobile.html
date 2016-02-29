@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="keywords" content="墨麟,古剑奇谭,秦时明月">
+    <meta name="description" content="墨麟游戏产品账号，用户注册">
+	<title>用户注册 - 墨麟游戏</title>
+    <link rel="stylesheet" href="style_mobile.css">
+    <script src="https://cdn-prod.36b.me/user/production/jquery-1.8.1.min.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/common.js"></script>
+    <script src="https://cdn-prod.36b.me/user/production/UserManager.js"></script>
+</head>
+<body>
+	<div class="logo"></div>
+	<div class="form">
+		<div class="row borderB">
+			<span>输入账号：</span><input type="text" id="unameInp">
+            <div class="error-tips"><span id="unameTip" style="display:none;"></span></div>
+		</div>
+		<div class="row borderB">
+			<span>输入密码：</span><input type="text" id="pwdInp">
+            <div class="error-tips"><span id="pwdTip" style="display:none;"></span></div>
+		</div>
+		<div class="row borderB" id="verifyRegLayer" style="display:none;">
+			<span>&nbsp;&nbsp;&nbsp;验证码：</span><input type="text" id="verifyInp" class="verify-inp" >
+            <a href="javascript:;" id="refreshRegVer"><img id="verifyRegImg" src="" width="80">点击图片刷新</a>
+            <div class="error-tips"><span id="verifyRegTip" style="display:none;"></span></div>
+		</div>
+		<div class="row txtR"><a href="forgot.html" target="_blank">忘记密码？</a></div>
+		<div class="row"><button id="loginBtn" class="button submit">立即登录</button></div>
+		<div class="row"><a id="regBtn" class="button" href="registerMobile.html">注册账号</a></div>
+		<div class="row">
+			<p>其他登录方式</p>
+			<p class="txtC"><a id="loginByQQ" href="#" class="login-btn login-qq"></a> &nbsp;&nbsp;<a id="loginByWechat" href="#" class="login-btn login-wechat"></a></p>
+		</div>
+	</div>
+	<div class="footer">Copyright © 2012-<script>document.write(new Date().getFullYear())</script> 墨麟科技股份有限公司</div>
+</body>
+<script type="text/javascript">
+    var surl = $.getReqParam("_surl");
+    var furl = $.getReqParam("_furl");
+    var $form = $(".form");
+
+	if(!$.isMobileDevice()){
+        location.href = "login.html"+$.contactPrm(surl, furl)
+    }
+    setVerify();
+
+    // 去注册
+    $("#toRegBtn").attr("href","registerMobile.html"+$.contactPrm(surl, furl));
+
+    $form.find("#loginByQQ").attr("href", UserManager.loginByQQUrl({surl:surl}));
+    $form.find("#loginByWechat").attr("href", UserManager.loginByWechatUrl({surl:surl}));
+
+    $form.find("#unameInp").focus(function() {
+        $form.find("#unameTip").hide();
+    });
+    $form.find("#pwdInp").focus(function() {
+        $form.find("#pwdTip").hide();
+    });
+    $form.find("#verifyInp").focus(function() {
+        $form.find("#verifyTip").hide();
+    });
+
+    $form.find("#loginBtn").click(function() {
+        var prms = invalidLoginForm();
+        if (prms) {
+            UserManager.login(prms, function(result) {
+                if (surl) location.href = decodeURIComponent(surl);
+                else location.href = "www.mokylin.com";
+            }, function(result) {
+                if (result.status == 0) {
+                    $form.find("#unameTip").show().text("登录失败");
+                } else if (result.status == 5) {
+                    $form.find("#unameTip").show().text("系统错误!");
+                } else if (result.status == 6) {
+                    $form.find("#unameTip").show().text("此邮箱账号不存在!");
+                } else if (result.status == 7) {
+                    $form.find("#pwdTip").show().text("密码错误!");
+                } else if (result.status == 15) {
+                    $form.find("#unameTip").show().text("此账号已经被禁用!");
+                } else if (result.status == 17) {
+                    $form.find("#verTip").show().text("验证码输入错误");
+                }
+                setVerify();
+            });
+        }
+    });
+
+    function invalidLoginForm() {
+        var _uname = $.trim($form.find("#unameInp").val()),
+            _pwd = $.trim($form.find("#pwdInp").val()),
+            _validatecode = "";
+
+        if (_uname.length <= 0) {
+            $form.find("#unameTip").show().text("请输入用户名");
+            return false;
+        } else if (_pwd.length <= 0) {
+            $form.find("#pwdTip").show().text("请输入密码");
+            return false;
+        } else if (UserManager.isVerify()) {
+            _validatecode = $.trim($form.find("#verifyInp").val());
+            if (_validatecode.length <= 0) {
+                $form.find("#verifyTip").show().text("请输入验证码");
+                return false;
+            }
+        }
+
+        return {
+            uname: _uname,
+            pwd: _pwd,
+            validatecode: _validatecode
+        };
+    }
+
+    function setVerify(){
+        if (UserManager.isVerify()) {
+            // 拉取验证码
+            $form.find("#verifyLayer").show();
+            $form.find("#verifyImg").attr("src", UserManager.getVerifyUrl());
+            $form.find("#refreshVer").click(function() {
+                $form.find("#verifyImg").attr("src", UserManager.getVerifyUrl());
+            });
+        }
+    }
+</script>
+</html>
