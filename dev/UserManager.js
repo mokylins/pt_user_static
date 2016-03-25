@@ -41,7 +41,7 @@ UserManager.login = function(prms, callback, failback) {
         },
         function(result) {
             if (result.status == 1) {
-                UserManager.setCookie("USER_INFO", UserManager._infoSerialize(result.data));
+                // UserManager.setCookie("USER_INFO", UserManager._infoSerialize(result.data));
                 UserManager.currUser = result.data;
                 callback(result);
             } else {
@@ -73,7 +73,7 @@ UserManager.logout = function(prms, callback, failback) {
         UserManager.g_server + "user/login/out?function=?",
         function(result) {
             if (result.status == 1) {
-                UserManager.delCookie("USER_INFO");
+                // UserManager.delCookie("USER_INFO");
                 UserManager.currUser = null;
                 if (callback) callback(result);
             } else {
@@ -136,17 +136,19 @@ UserManager.isLogined = function() {
  * 登陆用户详细信息
  */
 UserManager.initUserStatus = function(prms, callback, failback) {
-    if(UserManager.isLogined()){
-        var info = UserManager._infoUnserialize(UserManager.getCookie("USER_INFO"));
-        if(info){
-            UserManager.currUser = info;
-            callback({status: 1});
-        }else{
-            UserManager._getUser(callback);
-        }
-    }else{
-        callback({status: 0});
-    }
+    // if(UserManager.isLogined()){
+    //     var info = UserManager._infoUnserialize(UserManager.getCookie("USER_INFO"));
+    //     if(info){
+    //         UserManager.currUser = info;
+    //         callback({status: 1});
+    //     }else{
+    //         UserManager._getUser(callback);
+    //     }
+    // }else{
+    //     callback({status: 0});
+    // }
+    UserManager.currUser = null;
+    UserManager._getUser(callback);
 }
 
 UserManager._getUser = function(callback){
@@ -154,7 +156,7 @@ UserManager._getUser = function(callback){
         UserManager.g_server + "user/info/all?function=?",
         function(result) {
             if (result.status == 1) {
-                UserManager.setCookie("USER_INFO", UserManager._infoSerialize(result.data));
+                // UserManager.setCookie("USER_INFO", UserManager._infoSerialize(result.data));
                 UserManager.currUser = result.data;
             }
             if (callback) callback(result);
